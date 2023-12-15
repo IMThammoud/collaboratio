@@ -1,0 +1,2 @@
+db_user = hassan;
+db_user_pw = gurken123;
