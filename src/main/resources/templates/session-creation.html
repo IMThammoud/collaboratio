@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Session</title>
+    <link rel="stylesheet" href="/paper.css">
+</head>
+<body>
+
+<nav class="background-primary border-2  child-borders split-nav">
+    <div class="nav-brand ">
+        <h3><a href="#">COLLABORATIO</a></h3>
+    </div>
+    <div class="collapsible margin-right-large">
+        <input id="collapsible1" type="checkbox" name="collapsible1">
+        <label for="collapsible1">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </label>
+        <div class="collapsible-body">
+            <ul class="inline">
+                <li><a href="#">Einladen</a></li>
+                <li><a href="#">Sessions</a></li>
+                <li><a href="#">Profil</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div style="width: 50%;margin: auto">
+    <form class="form-group" action="session-created-done" method="post">
+        <label style="margin-top: 3%" for="topic">Topic</label>
+        <input class="input-block" type="text" name="topic" id="topic" placeholder="Keep it short">
+
+        <label style="margin-top: 3%" for="problem">Problem</label>
+        <textarea class="large-input" name="problem" id="problem" cols="80%" rows="10" placeholder="Describe your Problem or announce a Task"></textarea>
+
+        <label style="margin-top: 3%" for="hints">Hints / Thoughts</label>
+        <input class="input-block" type="text" name="hints" id="hints" placeholder="Any useful Thoughts you want to add before creating the Session?">
+
+        <label style="margin-top: 3%" class="btn-block" for="media">Link Media or Upload</label>
+        <input type="file" name="media" id="media">
+
+        <label style="margin-top: 3%" for="paperSelects1">How Many Session members?</label>
+        <select id="paperSelects1" name="sessionmembers">
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+
+        <button style="float: right" class="btn-success" type="submit">Create Session</button>
+
+    </form>
+</div>
+</body>
+</html>

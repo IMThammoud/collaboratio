@@ -6,17 +6,17 @@ public class SessionCreation {
     private String sessionTopic;
     private String sessionProblem;
     private String sessionHints;
-    private String sessionVisualization;
+    private String media;
     private int sessionMembers;
     private String inputHost;
     private String inputMemberTwo;
     private String inputMemberThree;
     private String inputMemberFour;
-    public SessionCreation(String sessionTopic, String sessionProblem, String sessionHints, String sessionVisualization, int sessionMembers){
+    public SessionCreation(String sessionTopic, String sessionProblem, String sessionHints, String media, int sessionMembers){
         this.sessionTopic = sessionTopic;
         this.sessionProblem = sessionProblem;
         this.sessionHints = sessionHints;
-        this.sessionVisualization = sessionVisualization;
+        this.media = media;
         this.sessionMembers = sessionMembers;
 
     }
@@ -61,12 +61,12 @@ public class SessionCreation {
         this.sessionHints = sessionHints;
     }
 
-    public String getSessionVisualization() {
-        return sessionVisualization;
+    public String getMedia() {
+        return media;
     }
 
-    public void setSessionVisualization(String sessionVisualization) {
-        this.sessionVisualization = sessionVisualization;
+    public void setMedia(String media) {
+        this.media = media;
     }
 
     public int getSessionMembers() {

@@ -6,15 +6,18 @@ public class UserAccount {
     private String token;
     private String email;
     private String avatar;
+    private String currentSessionToken;
+
+
     public UserAccount(String user_name,
                        String user_password,
                        String email,
-                       String img){
+                       String avatar){
 
         this.user_name = user_name;
         this.token = user_password;
         this.email = email;
-        this.avatar = img;
+        this.avatar = avatar;
 
     }
 
