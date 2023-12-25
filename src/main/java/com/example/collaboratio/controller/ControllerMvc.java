@@ -3,20 +3,18 @@ package com.example.collaboratio.controller;
 import com.example.collaboratio.logic.Queries;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.lang.System;
-import java.lang.Object;
 
 @Controller
 public class ControllerMvc {
@@ -33,7 +31,7 @@ public class ControllerMvc {
         try {
             connection = DriverManager.getConnection(
                     "jdbc:mariadb://localhost:3306/collaboratio",
-                    mariadb_user,mariadb_password);
+                    mariadb_user,"gurken123");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -46,9 +44,10 @@ public class ControllerMvc {
     }
 
     @GetMapping("/register")
-    public String register(){
+    public String register(@RequestAttribute("SessionID") HttpSession session){
 
-        return "register";
+        //return "register";
+        return session.getId();
     }
 
     @PostMapping("/register-submit")
@@ -64,7 +63,7 @@ public class ControllerMvc {
         if (newUser.getUser_name().isEmpty() || newUser.getToken().isEmpty() || newUser.getEmail().isEmpty() || newUser.getAvatar().isEmpty()) {
             return "register";
         } else
-            insertUser.insertUser(connection,newUser);
+            insertUser.insertUserAndSessionToken(connection,newUser);
         // create new user_account with request-parameters
         // check if parameters are valid -> if not return error page
         // store Attributes of new user_account in Database

@@ -2,8 +2,8 @@ package com.example.collaboratio.logic;
 
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
-
-import javax.xml.transform.Result;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import java.security.Security;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,16 +11,17 @@ import java.sql.SQLException;
 
 public class Queries {
     public String check;
-    public PreparedStatement insertUser(Connection con, UserAccount userAccount) throws SQLException {
+    public PreparedStatement insertUserAndSessionToken(Connection con, UserAccount userAccount) throws SQLException {
         PreparedStatement insertStatement = con.prepareStatement("""
             
-            INSERT INTO user_account (user_name, token, avatar) VALUES (?,?,?)
+            INSERT INTO user_account (user_name, token, avatar, current_session_token) VALUES (?,?,?,?)
                 
 """);
         {
             insertStatement.setString(1, userAccount.getUser_name());
             insertStatement.setString(2, userAccount.getToken());
             insertStatement.setString(3, userAccount.getAvatar());
+            insertStatement.setString(4, "uniqueSessionToken");
             int executed = insertStatement.executeUpdate();
         }
 
