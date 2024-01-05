@@ -6,11 +6,10 @@ import com.example.collaboratio.model.UserAccount;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.swing.text.View;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -106,6 +105,7 @@ public class ControllerMvc {
     public String mySessions(){
         return "mysessions";
     }
+
 
     @GetMapping("/inside-session")
     public String insideSession(){
