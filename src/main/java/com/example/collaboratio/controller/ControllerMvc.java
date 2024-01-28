@@ -1,15 +1,13 @@
 package com.example.collaboratio.controller;
 
 import com.example.collaboratio.logic.Queries;
+import com.example.collaboratio.model.NewUser;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.swing.text.View;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,23 +17,34 @@ import java.lang.System;
 public class ControllerMvc {
 
 // I NEED TO IMPORT ENVIRONMENT VARIABLES FOR DB-CREDENTIALS, this does not work
-    String mariadb_user = System.getenv("MARIADB_USER_NAME");
-
-    String mariadb_password = System.getenv("MARIADB_PASSWORD");
-
-
+    String mariadb_user = "trondl";
+    String mariadb_password = "bedepe";
     Connection connection;
 
     {
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:mariadb://localhost:3306/collaboratio",
-                    mariadb_user,"gurken123");
+                    "jdbc:mariadb://localhost:3306/logindata",
+                    "trondl",
+                    "bedepe");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @GetMapping("/insertUser")
+    public String loginMock(){
+        return "registerUser";
+    }
+
+    @PostMapping("/insertNewUser")
+    public String InsertedUser(@RequestParam("username") String username, @RequestParam("password") String password) throws SQLException {
+        NewUser newuser = new NewUser(username,password);
+        Queries insertUser = new Queries();
+        insertUser.insertNewUser(connection,newuser);
+        //System.out.println(RequestContextHolder.getRequestAttributes().getSessionId());
+        return "register-submit";
+    }
 
     @GetMapping("/")
     public String welcome(){
