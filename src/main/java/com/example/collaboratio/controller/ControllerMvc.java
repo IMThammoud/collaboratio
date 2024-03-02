@@ -84,7 +84,13 @@ public class ControllerMvc implements ErrorController {
     }
 
     @GetMapping("/login-page")
-    public String loginPage(){
+    public String loginPage(HttpSession session){
+
+        // Session will become invalidated if already logged in user goes and hits the login-page endpoint
+        System.out.println("SessionID before invalidating" + session.getId());
+        session.invalidate();
+
+        System.out.println("SessionID after invalidating" + session.getId());
         return "login-page";
     }
 
@@ -119,7 +125,7 @@ public class ControllerMvc implements ErrorController {
                                   @CookieValue ("JSESSIONID") String mycookie) throws SQLException {
         SessionCreation newSession = new SessionCreation(topic, problem, hints, media, sessionMembers);
         Queries insertSession = new Queries();
-        insertSession.insertSession(connection, newSession);
+        insertSession.insertSession(connection, newSession, mycookie);
         return "session-created-done";
     }
 

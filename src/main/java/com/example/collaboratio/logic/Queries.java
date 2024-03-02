@@ -40,10 +40,21 @@ public class Queries {
 
      return insertStatement; }
 
-    public PreparedStatement insertSession(Connection con, SessionCreation session) throws SQLException {
+    public PreparedStatement insertSession(Connection con, SessionCreation session, String mycookie) throws SQLException {
+
+        PreparedStatement lookForId = con.prepareStatement("""
+        SELECT id FROM T_user_accounts WHERE current_session_id = ?""");
+        {
+
+            lookForId.setString(1,mycookie);
+
+            ResultSet results = lookForId.executeQuery();
+            results.next();
+            System.out.println(results.getInt("id"));}
+
         PreparedStatement insertStatement = con.prepareStatement("""
             
-            INSERT INTO sessions_created (session_topic, session_problem,session_hints,session_members) VALUES (?,?,?,?)
+            INSERT INTO T_sessions_created (session_topic, session_problem,session_hints,members_amount,host_of_session) VALUES (?,?,?,?,?)
                 
 """);
         {
@@ -51,6 +62,8 @@ public class Queries {
             insertStatement.setString(2, session.getSessionProblem());
             insertStatement.setString(3, session.getSessionHints());
             insertStatement.setInt(4, session.getSessionMembers());
+
+            insertStatement.setInt(5, lookForId.getResultSet().getInt(1));
 
             int executed = insertStatement.executeUpdate();
         }
