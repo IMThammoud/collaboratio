@@ -3,19 +3,19 @@ package com.example.collaboratio.logic;
 import com.example.collaboratio.model.NewUser;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.SessionAttribute;
+
+import javax.management.relation.RelationSupport;
 import java.security.Security;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Queries {
-    public String check;
+    public String check ="fail";
 
     public PreparedStatement insertNewUser(Connection con, NewUser newuser) throws SQLException {
         PreparedStatement insertStatement = con.prepareStatement("""
-            INSERT INTO T_user_data (user_name, user_password) VALUES (?,?)
+            INSERT INTO T_user_accounts (user_name, token) VALUES (?,?)
             """);
         {
             insertStatement.setString(1,newuser.userName);
@@ -27,7 +27,7 @@ public class Queries {
     public PreparedStatement insertUserAndSessionToken(Connection con, UserAccount userAccount) throws SQLException {
         PreparedStatement insertStatement = con.prepareStatement("""
             
-            INSERT INTO user_account (user_name, token, avatar, current_session_token) VALUES (?,?,?,?)
+            INSERT INTO T_user_accounts (user_name, token, avatar, current_session_token) VALUES (?,?,?,?)
                 
 """);
         {
@@ -57,28 +57,58 @@ public class Queries {
 
         return insertStatement; }
 
-    public String loginCheck(Connection connection, String username, String token) throws SQLException {
+    public String loginCheck(Connection connection, String username, String token, HttpSession session) throws SQLException {
 
         PreparedStatement statement = connection.prepareStatement("""
             select user_name, token\s
-            FROM user_account\s""");{
+            FROM T_user_accounts
+            WHERE user_name =  ? """);
+            statement.setString(1,username);
+           {
 
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()){
-                System.out.println(resultSet.getString("user_name"));
-                System.out.println(resultSet.getString("token"));
+            resultSet.next();
+                try {
+                    if (resultSet.getString("user_name").equals(username) && resultSet.getString("token").equals(token)) {
+                        System.out.println("Login Success");
+                        PreparedStatement sessionStatement = connection.prepareStatement("""
+                        UPDATE T_user_accounts SET current_session_id = ? WHERE user_name = ? AND token = ?""");
+                        sessionStatement.setString(1,session.getId());
+                        sessionStatement.setString(2,username);
+                        sessionStatement.setString(3, token);{
+                            ResultSet resultSetSession = sessionStatement.executeQuery();
+                            resultSetSession.next();
+                        }
+                        check = "success";
+                        System.out.println(session.toString());
+                        resultSet.close();
+                        // need to make a break here otherwise check will we "fail"
 
-                if (resultSet.getString("user_name").equals(username) && resultSet.getString("token").equals(token)) {
-                    System.out.println("Login Success");
-                    check = "success";
-                    // need to make a break here otherwise check will we "fail"
-                    break;
-                }else
-                    check = "fail";
-            }
+                    }
+                } catch (Exception e){
+                    System.out.println(e);
+                }
+
+
+           }
+        return check;}
+
+    public boolean checkSessionID(String cookie, Connection con) throws SQLException {
+
+        PreparedStatement sessionCheckerStatement = con.prepareStatement("""
+        SELECT current_session_id FROM T_user_accounts WHERE current_session_id = ?""");
+        sessionCheckerStatement.setString(1,cookie);{
+
+            ResultSet sessionCheckerResults = sessionCheckerStatement.executeQuery();
+            sessionCheckerResults.next();
+            // if cookie matches the stored Session in DB, this function will return true and user can navigate through webapp
+            return sessionCheckerResults.getString("current_session_id").equals(cookie);
         }
-        return check;
+
+
     }
-}
+
+    }
+
 
 

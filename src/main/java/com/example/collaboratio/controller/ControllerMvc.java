@@ -4,17 +4,22 @@ import com.example.collaboratio.logic.Queries;
 import com.example.collaboratio.model.NewUser;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.HttpCookie;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.lang.System;
 
 @Controller
-public class ControllerMvc {
+public class ControllerMvc implements ErrorController {
 
 // I NEED TO IMPORT ENVIRONMENT VARIABLES FOR DB-CREDENTIALS, this does not work
     String mariadb_user = "trondl";
@@ -85,16 +90,23 @@ public class ControllerMvc {
 
     @PostMapping("login")
     public String login(@RequestParam("userName") String username,
-                        @RequestParam("password") String password) throws SQLException {
+                        @RequestParam("password") String password,
+                        HttpSession session) throws SQLException {
+
+        // Stores the created SessionID in a String
+        String currentSession = session.getId();
+        System.out.println(currentSession);
+
+
         Queries ShowRows = new Queries();
-        if ( ShowRows.loginCheck(connection,username,password).equals("success") ) {
+        if ( ShowRows.loginCheck(connection,username,password,session).equals("success") ) {
             return "mylobby";
         } else
             return "login-page";
     }
 
     @GetMapping("/session-creation")
-    public String sessionCreation(){
+    public String sessionCreation(@CookieValue ("JSESSIONID") String mycookie){
         return "session-creation";
     }
 
@@ -103,7 +115,8 @@ public class ControllerMvc {
                                   @RequestParam("problem") String problem,
                                   @RequestParam("hints") String hints,
                                   @RequestParam("media") String media,
-                                  @RequestParam("sessionmembers") int sessionMembers) throws SQLException {
+                                  @RequestParam("sessionmembers") int sessionMembers,
+                                  @CookieValue ("JSESSIONID") String mycookie) throws SQLException {
         SessionCreation newSession = new SessionCreation(topic, problem, hints, media, sessionMembers);
         Queries insertSession = new Queries();
         insertSession.insertSession(connection, newSession);
@@ -111,13 +124,23 @@ public class ControllerMvc {
     }
 
     @GetMapping("/mysessions")
-    public String mySessions(){
+    public String mySessions(@CookieValue ("JSESSIONID") String mycookie){
         return "mysessions";
     }
 
 
     @GetMapping("/inside-session")
-    public String insideSession(){
-        return "inside-session";
+    public String insideSession(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
+        Queries myquery = new Queries();
+        if(myquery.checkSessionID(mycookie, connection)) {
+            System.out.println(mycookie);
+            return "inside-session";
+        }else return "login-page";
+
+    }
+
+    @GetMapping("/error")
+    public String errorMessage(){
+        return "returnToHome";
     }
 }
