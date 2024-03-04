@@ -4,7 +4,9 @@ import com.example.collaboratio.logic.Queries;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.session.Session;
+import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,7 +16,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.lang.System;
-
+@Configuration
+@EnableJdbcHttpSession
 @Controller
 public class ControllerMvc {
 
@@ -26,19 +29,20 @@ public class ControllerMvc {
 
     Connection connection;
 
-    {
-        try {
-            connection = DriverManager.getConnection(
-                    "jdbc:mariadb://localhost:3306/collaboratio",
-                    mariadb_user,"gurken123");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    //{
+    //    try {
+    //        connection = DriverManager.getConnection(
+    //                "jdbc:mariadb://localhost:3306/collaboratio",
+    //                mariadb_user,"gurken123");
+    //    } catch (SQLException e) {
+    //        throw new RuntimeException(e);
+    //    }
+    //}
 
 
     @GetMapping("/")
-    public String welcome(){
+    public String welcome(HttpSession session){
+        System.out.println(session.getServletContext());
         return "index";
     }
 

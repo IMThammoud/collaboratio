@@ -58,6 +58,7 @@ public class Queries {
                 if (resultSet.getString("user_name").equals(username) && resultSet.getString("token").equals(token)) {
                     System.out.println("Login Success");
                     check = "success";
+
                     // need to make a break here otherwise check will we "fail"
                     break;
                 }else
