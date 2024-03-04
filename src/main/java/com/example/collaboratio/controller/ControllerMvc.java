@@ -9,8 +9,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.HttpCookie;
+import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.sql.Connection;
@@ -84,13 +86,13 @@ public class ControllerMvc implements ErrorController {
     }
 
     @GetMapping("/login-page")
-    public String loginPage(HttpSession session){
+    public String loginPage(){
 
         // Session will become invalidated if already logged in user goes and hits the login-page endpoint
-        System.out.println("SessionID before invalidating" + session.getId());
-        session.invalidate();
+        //System.out.println("SessionID before login" + session.getId());
 
-        System.out.println("SessionID after invalidating" + session.getId());
+
+        //System.out.println("SessionID after invalidating" + session.getId());
         return "login-page";
     }
 
@@ -101,19 +103,38 @@ public class ControllerMvc implements ErrorController {
 
         // Stores the created SessionID in a String
         String currentSession = session.getId();
-        System.out.println(currentSession);
+        session.invalidate();
+        System.out.println("Current session after login" + currentSession);
 
 
         Queries ShowRows = new Queries();
         if ( ShowRows.loginCheck(connection,username,password,session).equals("success") ) {
-            return "mylobby";
+            //return "mylobby";
+            return "redirect:/lobby";
         } else
-            return "login-page";
+            return "redirect:/login-page";
     }
 
+    @GetMapping("lobby")
+    public String mylobby(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
+
+
+
+        Queries myquery = new Queries();
+        if(myquery.checkSessionID(mycookie, connection)){
+            return "mylobby";
+        }
+        return "redirect:/login-page";
+    }
+
+
     @GetMapping("/session-creation")
-    public String sessionCreation(@CookieValue ("JSESSIONID") String mycookie){
-        return "session-creation";
+    public String sessionCreation(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
+        Queries myquery = new Queries();
+        if(myquery.checkSessionID(mycookie, connection)){
+            return "session-creation";
+        }
+        return "redirect:/login-page";
     }
 
     @PostMapping("/session-created-done")
@@ -123,15 +144,24 @@ public class ControllerMvc implements ErrorController {
                                   @RequestParam("media") String media,
                                   @RequestParam("sessionmembers") int sessionMembers,
                                   @CookieValue ("JSESSIONID") String mycookie) throws SQLException {
-        SessionCreation newSession = new SessionCreation(topic, problem, hints, media, sessionMembers);
         Queries insertSession = new Queries();
-        insertSession.insertSession(connection, newSession, mycookie);
-        return "session-created-done";
+        if(insertSession.checkSessionID(mycookie, connection)) {
+
+            SessionCreation newSession = new SessionCreation(topic, problem, hints, media, sessionMembers);
+
+            insertSession.insertSession(connection, newSession, mycookie);
+            return "session-created-done";
+        }
+        return "redirect:login-page";
     }
 
     @GetMapping("/mysessions")
-    public String mySessions(@CookieValue ("JSESSIONID") String mycookie){
-        return "mysessions";
+    public String mySessions(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
+        Queries myquery = new Queries();
+        if(myquery.checkSessionID(mycookie, connection)){
+            return "mysessions";
+        }
+        return "redirect:/login-page";
     }
 
 
@@ -141,7 +171,7 @@ public class ControllerMvc implements ErrorController {
         if(myquery.checkSessionID(mycookie, connection)) {
             System.out.println(mycookie);
             return "inside-session";
-        }else return "login-page";
+        } return "redirect:/login-page";
 
     }
 
@@ -149,4 +179,6 @@ public class ControllerMvc implements ErrorController {
     public String errorMessage(){
         return "returnToHome";
     }
+
+
 }
