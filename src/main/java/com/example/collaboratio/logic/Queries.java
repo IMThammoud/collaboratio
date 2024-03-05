@@ -7,8 +7,12 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.management.relation.RelationSupport;
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.Security;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Queries {
     public String check ="fail";
@@ -40,7 +44,7 @@ public class Queries {
 
      return insertStatement; }
 
-    public PreparedStatement insertSession(Connection con, SessionCreation session, String mycookie) throws SQLException {
+    public PreparedStatement insertSession(Connection con, SessionCreation session, String mycookie, Blob media) throws SQLException {
 
         PreparedStatement lookForId = con.prepareStatement("""
         SELECT id FROM T_user_accounts WHERE current_session_id = ?""");
@@ -54,7 +58,7 @@ public class Queries {
 
         PreparedStatement insertStatement = con.prepareStatement("""
             
-            INSERT INTO T_sessions_created (session_topic, session_problem,session_hints,members_amount,host_of_session) VALUES (?,?,?,?,?)
+            INSERT INTO T_sessions_created (session_topic, session_problem,session_hints,members_amount,host_of_session,media) VALUES (?,?,?,?,?,?)
                 
 """);
         {
@@ -64,6 +68,7 @@ public class Queries {
             insertStatement.setInt(4, session.getSessionMembers());
 
             insertStatement.setInt(5, lookForId.getResultSet().getInt(1));
+            insertStatement.setBlob(6,media);
 
             int executed = insertStatement.executeUpdate();
         }
@@ -148,6 +153,52 @@ public class Queries {
             return results.getString("id");
         }
     }
+
+
+    // This queries the the id from T_user_accounts and then uses the id to query the data from T_sessions_created
+    // it loops through the amount of .next() is successful and stores the dataset into a List
+    public SessionCreation[] getDataForCards(String cookie, Connection con) throws SQLException {
+
+        ArrayList<SessionCreation> SessionList =  new ArrayList<>();
+        int i = 0;
+
+        PreparedStatement fetchId = con.prepareStatement("""
+        SELECT id
+        FROM T_user_accounts
+        WHERE current_session_id = ?""");
+        fetchId.setString(1,cookie);
+
+        ResultSet results = fetchId.executeQuery();
+        results.next();
+        String user_id = results.getString("id");
+
+
+
+        PreparedStatement statement = con.prepareStatement("""
+        SELECT session_topic, session_problem, session_hints, media,members_amount 
+        FROM T_sessions_created
+        WHERE host_of_session = ?""");
+        statement.setString(1,user_id);
+
+        ResultSet resultSessions = statement.executeQuery();
+        while (resultSessions.next()){
+
+            SessionCreation newSession = new SessionCreation(resultSessions.getString(1),
+                                                            resultSessions.getString(2),
+                                                            resultSessions.getString(3),
+                                                            resultSessions.getBlob(4),
+                                                            resultSessions.getInt(5));
+
+            SessionList.add(newSession);
+            System.out.println(SessionList.size());
+            i++;
+        }
+
+    return null;
+
+
+
+    };
 
     }
 

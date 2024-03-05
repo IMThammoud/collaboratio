@@ -1,18 +1,23 @@
 package com.example.collaboratio.model;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.sql.Blob;
+
 public class SessionCreation {
     private int sessionId;
     private int sessionHost;
     private String sessionTopic;
     private String sessionProblem;
     private String sessionHints;
-    private String media;
+    private Blob media;
     private int sessionMembers;
     private String inputHost;
     private String inputMemberTwo;
     private String inputMemberThree;
     private String inputMemberFour;
-    public SessionCreation(String sessionTopic, String sessionProblem, String sessionHints, String media, int sessionMembers){
+    public SessionCreation(String sessionTopic, String sessionProblem, String sessionHints, Blob media, int sessionMembers){
         this.sessionTopic = sessionTopic;
         this.sessionProblem = sessionProblem;
         this.sessionHints = sessionHints;
@@ -61,11 +66,11 @@ public class SessionCreation {
         this.sessionHints = sessionHints;
     }
 
-    public String getMedia() {
+    public Blob getMedia() {
         return media;
     }
 
-    public void setMedia(String media) {
+    public void setMedia(Blob media) {
         this.media = media;
     }
 

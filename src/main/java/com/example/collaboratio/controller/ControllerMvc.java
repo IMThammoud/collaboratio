@@ -6,11 +6,17 @@ import com.example.collaboratio.model.NewUser;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
 import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.Decoder;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.*;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -35,7 +41,14 @@ public class ControllerMvc implements ErrorController {
         }
     }
 
-    @GetMapping("/insertUser")
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+
+        return "redirect:/login-page";
+    }
+
+    @GetMapping("/registerNewUser")
     public String loginMock(){
         return "registerUser";
     }
@@ -43,6 +56,10 @@ public class ControllerMvc implements ErrorController {
     @PostMapping("/insertNewUser")
     public String InsertedUser(@RequestParam("username") String username, @RequestParam("password") String password) throws SQLException {
         NewUser newuser = new NewUser(username,password);
+
+        if (newuser.userName.isEmpty() || newuser.userPassword.isEmpty()) {
+            return "redirect:/registerUser";
+        }
         Queries insertUser = new Queries();
         insertUser.insertNewUser(connection,newuser);
         //System.out.println(RequestContextHolder.getRequestAttributes().getSessionId());
@@ -146,15 +163,22 @@ public class ControllerMvc implements ErrorController {
     public String sessionCreation(@RequestParam("topic") String topic,
                                   @RequestParam("problem") String problem,
                                   @RequestParam("hints") String hints,
-                                  @RequestParam("media") String media,
+                                  @RequestParam("media") MultipartFile media,
                                   @RequestParam("sessionmembers") int sessionMembers,
-                                  @CookieValue ("JSESSIONID") String mycookie) throws SQLException {
+                                  @CookieValue ("JSESSIONID") String mycookie) throws SQLException, IOException {
+
         Queries insertSession = new Queries();
+
+        MultipartFile myfile = media;
+        byte[] uploadAsBytes = myfile.getBytes();
+        Blob uploadAsBlob = new SerialBlob(uploadAsBytes);
+
         if(insertSession.checkSessionID(mycookie, connection)) {
 
-            SessionCreation newSession = new SessionCreation(topic, problem, hints, media, sessionMembers);
+            SessionCreation newSession = new SessionCreation(topic, problem, hints, uploadAsBlob, sessionMembers);
 
-            insertSession.insertSession(connection, newSession, mycookie);
+            insertSession.insertSession(connection, newSession, mycookie,uploadAsBlob);
+
             return "session-created-done";
         }
         return "redirect:login-page";
@@ -186,4 +210,15 @@ public class ControllerMvc implements ErrorController {
     }
 
 
+    @GetMapping("/sessions")
+    public ModelAndView sessions(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
+        Queries myquery = new Queries();
+        if (myquery.checkSessionID(mycookie,connection)) {
+
+            ModelAndView myview = new ModelAndView("sessions");
+            myquery.getDataForCards(mycookie,connection);
+            return myview;
+        }
+        return null;
+    }
 }
