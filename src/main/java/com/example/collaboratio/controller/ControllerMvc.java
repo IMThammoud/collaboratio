@@ -1,20 +1,16 @@
 package com.example.collaboratio.controller;
 
 import com.example.collaboratio.logic.Queries;
+import com.example.collaboratio.model.MyLobbyClass;
 import com.example.collaboratio.model.NewUser;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.net.HttpCookie;
-import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -116,15 +112,24 @@ public class ControllerMvc implements ErrorController {
     }
 
     @GetMapping("lobby")
-    public String mylobby(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
-
-
-
+    public ModelAndView mylobby(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
         Queries myquery = new Queries();
+
+
+
         if(myquery.checkSessionID(mycookie, connection)){
-            return "mylobby";
+
+            MyLobbyClass lobbymodel = new MyLobbyClass();
+            lobbymodel.setUserName(myquery.getUserName(mycookie,connection));
+            lobbymodel.setUserId(myquery.getUserId(mycookie,connection));
+
+            ModelAndView toRender = new ModelAndView("mylobby");
+            toRender.addObject("user_name",lobbymodel.getUserName());
+            toRender.addObject("user_id",lobbymodel.getUserId());
+            return toRender;
         }
-        return "redirect:/login-page";
+        ModelAndView returnLogin = new ModelAndView("login-page");
+        return returnLogin;
     }
 
 

@@ -28,12 +28,11 @@
         </div>
     </div>
 </nav>
-<button hx-get="/get-info"
-        hx-trigger="click"
-        hx-target="#swapthis"
-        hx-swap="outerHTML"> Click me to update</button>
 
-<h2 id="swapthis">This will be swapped</h2>
+<!-- RENDERING USER DATA VIA THYMELEAF for MYLOBBY -->
+<h4 th:text="'User-Name: ' + ${user_name}"></h4>
+<h5 th:text="'User-ID: ' + ${user_id}"></h5>
+
 
 <div style="text-align: center; margin: 10%; width: auto;"> <a href="session-creation">
     <button>Create New Session</button>

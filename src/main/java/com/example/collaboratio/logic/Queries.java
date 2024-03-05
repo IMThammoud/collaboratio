@@ -121,6 +121,34 @@ public class Queries {
 
     }
 
+    public String getUserName(String cookie, Connection con) throws SQLException {
+        PreparedStatement statement = con.prepareStatement("""
+        SELECT user_name 
+        FROM T_user_accounts
+        WHERE current_session_id = ?""");
+        statement.setString(1,cookie);
+        {
+            ResultSet results = statement.executeQuery();
+            results.next();
+
+            return results.getString("user_name");
+        }
+    }
+
+    public String getUserId(String cookie, Connection con) throws SQLException {
+        PreparedStatement statement = con.prepareStatement("""
+        SELECT id 
+        FROM T_user_accounts
+        WHERE current_session_id = ?""");
+        statement.setString(1,cookie);
+        {
+            ResultSet results = statement.executeQuery();
+            results.next();
+
+            return results.getString("id");
+        }
+    }
+
     }
 
 
