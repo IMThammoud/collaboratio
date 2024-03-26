@@ -3,8 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>My Lobby</title>
+    <link rel="stylesheet" href="/paper.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 <body>
-<h1>My Lobby Page</h1>
+
+<nav class="background-primary border-2  child-borders split-nav">
+    <div class="nav-brand ">
+        <h3 style="width: 300px"><a href="/lobby" style="flex: auto">COLLABORATIO <img style="float: right;border: none" src="/images/logo-withoutbg.png" width="20%"/></a>
+        </h3>
+    </div>
+    <div class="collapsible margin-right-large">
+        <input id="collapsible1" type="checkbox" name="collapsible1">
+        <label for="collapsible1">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+            <div class="bar4"></div>
+        </label>
+        <div class="collapsible-body">
+            <ul class="inline">
+                <li><a href="#">Einladen</a></li>
+                <li><a href="/sessions" >Sessions</a></li>
+                <li><a href="#">Profil</a></li>
+                <li><a style="color: gray" href="/logout">LOGOUT</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- RENDERING USER DATA VIA THYMELEAF for MYLOBBY -->
+<h4 style="text-align: center" th:text="'User-Name: ' + ${user_name}"></h4>
+<h5 style="text-align: center" th:text="'User-ID: ' + ${user_id}"></h5>
+
+
+<div style="text-align: center; margin: 10%; width: auto;"> <a href="session-creation">
+    <button>Create New Session</button>
+</a>
+</div>
+
 </body>
 </html>
