@@ -25,7 +25,7 @@ import java.lang.System;
 @Controller
 public class ControllerMvc implements ErrorController {
 
-// I NEED TO IMPORT ENVIRONMENT VARIABLES FOR DB-CREDENTIALS, this does not work
+// I NEED TO IMPORT ENVIRONMENT VARIABLES FOR DB-CREDENTIALS, Its not working with ENVS right now :-(
     String mariadb_user = "trondl";
     String mariadb_password = "bedepe";
     Connection connection;
@@ -53,6 +53,12 @@ public class ControllerMvc implements ErrorController {
         return "registerUser";
     }
 
+    @GetMapping("/afterRegister")
+    public String afterRegister(){
+
+        return "register-submit";
+    }
+
     @PostMapping("/insertNewUser")
     public String InsertedUser(@RequestParam("username") String username, @RequestParam("password") String password) throws SQLException {
         NewUser newuser = new NewUser(username,password);
@@ -63,7 +69,7 @@ public class ControllerMvc implements ErrorController {
         Queries insertUser = new Queries();
         insertUser.insertNewUser(connection,newuser);
         //System.out.println(RequestContextHolder.getRequestAttributes().getSessionId());
-        return "register-submit";
+        return "redirect:/afterRegister";
     }
 
     @GetMapping("/")
@@ -78,25 +84,7 @@ public class ControllerMvc implements ErrorController {
         return session.getId();
     }
 
-    @PostMapping("/register-submit")
-    public String registerSubmit(@RequestParam("userName") String userName,
-                                 @RequestParam("token") String token,
-                                 @RequestParam("email") String email,
-                                 @RequestParam("avatar") String avatarChoice) throws SQLException {
-        UserAccount newUser = new UserAccount(userName,token,email,avatarChoice);
-        System.out.println(newUser.getEmail());
 
-        Queries insertUser = new Queries();
-        // If some attribute of newUser is empty (so an empty param is passed) no SQL query will be made
-        if (newUser.getUser_name().isEmpty() || newUser.getToken().isEmpty() || newUser.getEmail().isEmpty() || newUser.getAvatar().isEmpty()) {
-            return "register";
-        } else
-            insertUser.insertUserAndSessionToken(connection,newUser);
-        // create new user_account with request-parameters
-        // check if parameters are valid -> if not return error page
-        // store Attributes of new user_account in Database
-        return "register-submit";
-    }
 
     @GetMapping("/login-page")
     public String loginPage(){
@@ -179,19 +167,13 @@ public class ControllerMvc implements ErrorController {
 
             insertSession.insertSession(connection, newSession, mycookie,uploadAsBlob);
 
-            return "session-created-done";
+            return "redirect:/sessions";
         }
         return "redirect:login-page";
     }
 
-    @GetMapping("/mysessions")
-    public String mySessions(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
-        Queries myquery = new Queries();
-        if(myquery.checkSessionID(mycookie, connection)){
-            return "mysessions";
-        }
-        return "redirect:/login-page";
-    }
+
+
 
 
     @GetMapping("/inside-session")

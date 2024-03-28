@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/paper.css">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
-<body>
+<body style="background-image: url('/dot-grid.webp')">
 
 <nav class="background-primary border-2  child-borders split-nav">
     <div class="nav-brand ">
@@ -33,9 +33,10 @@
 </nav>
 
 <!-- RENDERING USER DATA VIA THYMELEAF for MYLOBBY -->
-<h4 style="text-align: center" th:text="'User-Name: ' + ${user_name}"></h4>
-<h5 style="text-align: center" th:text="'User-ID: ' + ${user_id}"></h5>
-
+<div style="text-align: center">
+<h4 class="badge secondary text-center" style="text-align: center; font-size: 20px" th:text="'User-Name: ' + ${user_name}"></h4>
+<h5 style="text-align: center; font-size: 20px"  class="badge success text-center" th:text="'User-ID: ' + ${user_id}"></h5>
+</div>
 
 <div style="text-align: center; margin: 10%; width: auto;"> <a href="session-creation">
     <button>Create New Session</button>
