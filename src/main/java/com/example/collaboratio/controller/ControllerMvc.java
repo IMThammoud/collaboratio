@@ -198,7 +198,6 @@ public class ControllerMvc implements ErrorController {
         if (myquery.checkSessionID(mycookie,connection)) {
 
             ModelAndView myview = new ModelAndView("sessions");
-            myquery.getDataForCards(mycookie,connection);
             return myview;
         }
         return null;

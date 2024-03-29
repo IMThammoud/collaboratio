@@ -4,6 +4,8 @@ import com.example.collaboratio.model.NewUser;
 import com.example.collaboratio.model.SessionCreation;
 import com.example.collaboratio.model.UserAccount;
 import jakarta.servlet.http.HttpSession;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.management.relation.RelationSupport;
@@ -13,6 +15,7 @@ import java.io.InputStream;
 import java.security.Security;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Queries {
     public String check ="fail";
@@ -157,9 +160,9 @@ public class Queries {
 
     // This queries the the id from T_user_accounts and then uses the id to query the data from T_sessions_created
     // it loops through the amount of .next() is successful and stores the dataset into a List
-    public SessionCreation[] getDataForCards(String cookie, Connection con) throws SQLException {
+    public String getDataForCards(String cookie, Connection con) throws SQLException {
 
-        ArrayList<SessionCreation> SessionList =  new ArrayList<>();
+        ArrayList<JSONObject> SessionList =  new ArrayList<>();
         int i = 0;
 
         PreparedStatement fetchId = con.prepareStatement("""
@@ -189,12 +192,18 @@ public class Queries {
                                                             resultSessions.getBlob(4),
                                                             resultSessions.getInt(5));
 
-            SessionList.add(newSession);
-            System.out.println(SessionList.size());
+            // Make JSON-Objects of SessionData and store them in a list
+            JSONObject SessionAsJson = new JSONObject(newSession);
+            SessionList.add(SessionAsJson);
+
+            JSONArray SessionArrayJson = new JSONArray(SessionList);
+
+
+            System.out.println("Content of Object in JSON-ARRAY" + SessionArrayJson.toString());
             i++;
         }
 
-    return null;
+    return SessionList.toString();
 
 
 
