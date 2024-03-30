@@ -27,6 +27,7 @@ public class SessionCreation {
         this.sessionHints = sessionHints;
         this.media = media;
         this.sessionMembers = sessionMembers;
+        this.sessionId = sessionId;
 
     }
 

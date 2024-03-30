@@ -49,7 +49,7 @@ public class RestController {
 
 
         PreparedStatement statement = DbConnector.connection.prepareStatement("""
-        SELECT session_topic, session_problem, session_hints, media,members_amount, host_of_session 
+        SELECT session_topic, session_problem, session_hints, media,members_amount, host_of_session ,id
         FROM T_sessions_created
         WHERE host_of_session = ?""");
         statement.setString(1,user_id);
@@ -63,6 +63,9 @@ public class RestController {
                     resultSessions.getString(3),
                     resultSessions.getBlob(4),
                     resultSessions.getInt(5));
+
+            // Adding the SessionID (primary key) manually to the object and appending it to the JSON that way.
+            newSession.setSessionId(resultSessions.getInt(6));
 
 
             // Make JSON-Objects of SessionData and store them in a list
