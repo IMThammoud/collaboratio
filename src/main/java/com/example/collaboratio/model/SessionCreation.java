@@ -17,7 +17,11 @@ public class SessionCreation {
     private String inputMemberTwo;
     private String inputMemberThree;
     private String inputMemberFour;
-    public SessionCreation(String sessionTopic, String sessionProblem, String sessionHints, Blob media, int sessionMembers){
+    public SessionCreation(String sessionTopic,
+                           String sessionProblem,
+                           String sessionHints,
+                           Blob media,
+                           int sessionMembers){
         this.sessionTopic = sessionTopic;
         this.sessionProblem = sessionProblem;
         this.sessionHints = sessionHints;

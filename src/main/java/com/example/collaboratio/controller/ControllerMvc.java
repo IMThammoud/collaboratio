@@ -1,5 +1,7 @@
 package com.example.collaboratio.controller;
 
+import com.example.collaboratio.CollaboratioApplication;
+import com.example.collaboratio.logic.DbConnector;
 import com.example.collaboratio.logic.Queries;
 import com.example.collaboratio.model.MyLobbyClass;
 import com.example.collaboratio.model.NewUser;
@@ -26,20 +28,7 @@ import java.lang.System;
 public class ControllerMvc implements ErrorController {
 
 // I NEED TO IMPORT ENVIRONMENT VARIABLES FOR DB-CREDENTIALS, Its not working with ENVS right now :-(
-    String mariadb_user = "trondl";
-    String mariadb_password = "bedepe";
-    Connection connection;
 
-    {
-        try {
-            connection = DriverManager.getConnection(
-                    "jdbc:mariadb://localhost:3306/logindata",
-                    "trondl",
-                    "bedepe");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @GetMapping("/logout")
     public String logout(HttpSession session){
@@ -67,7 +56,7 @@ public class ControllerMvc implements ErrorController {
             return "redirect:/registerUser";
         }
         Queries insertUser = new Queries();
-        insertUser.insertNewUser(connection,newuser);
+        insertUser.insertNewUser(DbConnector.connection,newuser);
         //System.out.println(RequestContextHolder.getRequestAttributes().getSessionId());
         return "redirect:/afterRegister";
     }
@@ -109,7 +98,7 @@ public class ControllerMvc implements ErrorController {
 
 
         Queries ShowRows = new Queries();
-        if ( ShowRows.loginCheck(connection,username,password,session).equals("success") ) {
+        if ( ShowRows.loginCheck(DbConnector.connection,username,password,session).equals("success") ) {
             //return "mylobby";
             return "redirect:/lobby";
         } else
@@ -122,11 +111,11 @@ public class ControllerMvc implements ErrorController {
 
 
 
-        if(myquery.checkSessionID(mycookie, connection)){
+        if(myquery.checkSessionID(mycookie, DbConnector.connection)){
 
             MyLobbyClass lobbymodel = new MyLobbyClass();
-            lobbymodel.setUserName(myquery.getUserName(mycookie,connection));
-            lobbymodel.setUserId(myquery.getUserId(mycookie,connection));
+            lobbymodel.setUserName(myquery.getUserName(mycookie,DbConnector.connection));
+            lobbymodel.setUserId(myquery.getUserId(mycookie,DbConnector.connection));
 
             ModelAndView toRender = new ModelAndView("mylobby");
             toRender.addObject("user_name",lobbymodel.getUserName());
@@ -141,7 +130,7 @@ public class ControllerMvc implements ErrorController {
     @GetMapping("/session-creation")
     public String sessionCreation(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
         Queries myquery = new Queries();
-        if(myquery.checkSessionID(mycookie, connection)){
+        if(myquery.checkSessionID(mycookie, DbConnector.connection)){
             return "session-creation";
         }
         return "redirect:/login-page";
@@ -161,11 +150,11 @@ public class ControllerMvc implements ErrorController {
         byte[] uploadAsBytes = myfile.getBytes();
         Blob uploadAsBlob = new SerialBlob(uploadAsBytes);
 
-        if(insertSession.checkSessionID(mycookie, connection)) {
+        if(insertSession.checkSessionID(mycookie, DbConnector.connection)) {
 
             SessionCreation newSession = new SessionCreation(topic, problem, hints, uploadAsBlob, sessionMembers);
 
-            insertSession.insertSession(connection, newSession, mycookie,uploadAsBlob);
+            insertSession.insertSession(DbConnector.connection, newSession, mycookie,uploadAsBlob);
 
             return "redirect:/sessions";
         }
@@ -179,7 +168,7 @@ public class ControllerMvc implements ErrorController {
     @GetMapping("/inside-session")
     public String insideSession(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
         Queries myquery = new Queries();
-        if(myquery.checkSessionID(mycookie, connection)) {
+        if(myquery.checkSessionID(mycookie, DbConnector.connection)) {
             System.out.println(mycookie);
             return "inside-session";
         } return "redirect:/login-page";
@@ -195,7 +184,7 @@ public class ControllerMvc implements ErrorController {
     @GetMapping("/sessions")
     public ModelAndView sessions(@CookieValue ("JSESSIONID") String mycookie) throws SQLException {
         Queries myquery = new Queries();
-        if (myquery.checkSessionID(mycookie,connection)) {
+        if (myquery.checkSessionID(mycookie,DbConnector.connection)) {
 
             ModelAndView myview = new ModelAndView("sessions");
             return myview;

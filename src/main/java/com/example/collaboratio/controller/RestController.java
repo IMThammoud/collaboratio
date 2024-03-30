@@ -1,32 +1,41 @@
 package com.example.collaboratio.controller;
 
+import com.example.collaboratio.logic.DbConnector;
 import com.example.collaboratio.model.SessionCreation;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import org.springframework.boot.jdbc.DatabaseDriver;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestController {
+
     @GetMapping("/get-info")
     public String getInfo(){
 
         return "this info was queried via htmx";
     }
 
-    // This queries the the id from T_user_accounts and then uses the id to query the data from T_sessions_created
+    @GetMapping("/getCards")
+    // This queries the id from T_user_accounts and then uses the id to query the data from T_sessions_created
     // it loops through the amount of .next() is successful and stores the dataset into a List
-    public String getDataForCards(String cookie, Connection con) throws SQLException {
+    public String getDataForCards(@CookieValue("JSESSIONID") String cookie) throws SQLException {
 
-        ArrayList<JSONObject> SessionList =  new ArrayList<>();
+        List<SessionCreation> SessionList = new ArrayList<>();
+        String listJson = null;
+        Gson serialize = new Gson();
         int i = 0;
 
-        PreparedStatement fetchId = con.prepareStatement("""
+        PreparedStatement fetchId = DbConnector.connection.prepareStatement("""
         SELECT id
         FROM T_user_accounts
         WHERE current_session_id = ?""");
@@ -38,11 +47,13 @@ public class RestController {
 
 
 
-        PreparedStatement statement = con.prepareStatement("""
-        SELECT session_topic, session_problem, session_hints, media,members_amount 
+
+        PreparedStatement statement = DbConnector.connection.prepareStatement("""
+        SELECT session_topic, session_problem, session_hints, media,members_amount, host_of_session 
         FROM T_sessions_created
         WHERE host_of_session = ?""");
         statement.setString(1,user_id);
+        System.out.println("Catched UserID: " + user_id);
 
         ResultSet resultSessions = statement.executeQuery();
         while (resultSessions.next()){
@@ -53,20 +64,19 @@ public class RestController {
                     resultSessions.getBlob(4),
                     resultSessions.getInt(5));
 
+
             // Make JSON-Objects of SessionData and store them in a list
-            JSONObject SessionAsJson = new JSONObject(newSession);
-            SessionList.add(SessionAsJson);
+            SessionList.add(newSession);
 
-            JSONArray SessionArrayJson = new JSONArray(SessionList);
-
-
-            System.out.println("Content of Object in JSON-ARRAY" + SessionArrayJson.toString());
+            System.out.println("Content of Object in JSON-ARRAY" + SessionList.get(i).getSessionId());
+            // Iterator to check how often this loop is repeated
             i++;
-        }
-
-        return SessionList.toString();
+        }            listJson = serialize.toJson(SessionList);
 
 
+        return listJson;
 
-    };
+
+
+    }
 }
