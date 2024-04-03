@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/paper.css">
 
 </head>
-<body>
+<body style="background-image: url('/dot-grid.webp')">
 <nav class="background-primary border-2  child-borders split-nav">
     <div class="nav-brand ">
         <h3 style="width: 300px"><a href="/login-page" style="flex: auto">COLLABORATIO <img style="float: right;border: none" src="/images/logo-withoutbg.png" width="20%"/></a>
@@ -27,10 +27,11 @@
 </nav>
 <h1>Login Site</h1>
 
-<form action="/login" method="post">
-    <input type="text" name="userName" placeholder="userName">
-    <input type="password" name="password" placeholder="password">
-    <input type="submit" value="LOGIN">
+<form  action="/login" method="post">
+    <input style="text-align: center" type="text" name="userName" placeholder="userName">
+    <input style="text-align: center" type="password" name="password" placeholder="password">
+    <button class="btn-success" type="submit">Login</button>
 </form>
+
 </body>
 </html>

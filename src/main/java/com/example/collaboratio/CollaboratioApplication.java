@@ -1,5 +1,6 @@
 package com.example.collaboratio;
 
+import com.example.collaboratio.logic.DbConnector;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 public class CollaboratioApplication {
 
 	public static void main(String[] args) {
+
 
 		SpringApplication.run(CollaboratioApplication.class, args);
 	}

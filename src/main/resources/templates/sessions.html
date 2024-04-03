@@ -5,7 +5,7 @@
     <title>Title</title>
     <link rel="stylesheet" href="/paper.css">
 </head>
-<body>
+<body style="background-image: url('/dot-grid.webp')">
 <nav class="background-primary border-2  child-borders split-nav">
     <div class="nav-brand ">
         <h3 style="width: 300px"><a href="/lobby" style="flex: auto">COLLABORATIO <img style="float: right;border: none" src="/images/logo-withoutbg.png" width="20%"/></a>
@@ -27,15 +27,11 @@
 
 <h3 style="text-align: center"> Your Sessions</h3>
 
-<div class="card" style="width: 15rem;">
-    <img src="https://picsum.photos/768" alt="Card example image">
+<script src="/loadCards.js"></script>
 
-    <div class="card-body">
-        <h4 class="card-title">Session Topic</h4>
-        <h5 class="card-subtitle">Hints from Host</h5>
-        <p class="card-text">Problem Text: a bit of it atleast</p>
-        <button>Open Session</button>
-    </div>
+
+<div id="ChangingContainer" style="display: inline-flex;">
+
 </div>
 
 </body>
