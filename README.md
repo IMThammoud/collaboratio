@@ -2,6 +2,9 @@
 
 ### WebApp with different approach to teamwork
 
+### Lobby-Preview
+-> ![LobbyPreviewCollabo.png](..%2F..%2FBilder%2FBildschirmfotos%2FLobbyPreviewCollabo.png)
+
 #### Done:
 
 ##### -> Prepared some HTML Templates to be served with MVC
@@ -15,7 +18,7 @@
 ##### --> SessionHost and SessionID will be returned inside Session-JSON-Object after SessionCreation
 ____
 ## To-Do:
-##### -> Use Environment Variables for DB Login
+##### -> ~~Use Environment Variables for DB access~~
 ##### -> Fill Card Images with imageuploads from Sessioncreation or a Default one
 ##### -> Store IMGs on Server and safe the URL-Paths to the imgs in the DB instead of the img Blob
 ##### -> Dont allow Session Topic and Problem to be empty on creation
@@ -24,3 +27,4 @@ ____
 ##### -> Add a Profile View and render User Info
 ##### -> Write a Query to get info about the opened Session and render info on view
 ##### -> T_sessions_created Table needs a Primary key to render info about a session precisely
+##### -> Limit the max size of previewed text on the cards via JS (Or other workaround)
