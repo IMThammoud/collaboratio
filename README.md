@@ -3,7 +3,7 @@
 ### WebApp with different approach to teamwork
 
 ### Lobby-Preview
--> ![Demo-Lobby](https://github.com/IMThammoud/Collaboratio/blob/main/PreviewLobbyCollabo.png?raw=true)
+-> ![Demo-Lobby](https://github.com/IMThammoud/collaboratio/main/LobbyPreviewCollabo.png?raw=true)
 
 
 #### Done:
