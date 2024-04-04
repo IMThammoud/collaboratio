@@ -3,7 +3,8 @@
 ### WebApp with different approach to teamwork
 
 ### Lobby-Preview
--> ![LobbyPreviewCollabo.png](..%2F..%2FBilder%2FBildschirmfotos%2FLobbyPreviewCollabo.png)
+-> ![Demo-Lobby](https://github.com/IMThammoud/Collaboratio/blob/main/PreviewLobbyCollabo.png?raw=true)
+
 
 #### Done:
 
