@@ -65,7 +65,8 @@ public class RestController {
                     resultSessions.getInt(5));
 
             // Adding the SessionID (primary key) manually to the object and appending it to the JSON that way.
-            newSession.setSessionId(resultSessions.getInt(6));
+            newSession.setSessionHost(resultSessions.getInt(6));
+            newSession.setSessionId(resultSessions.getInt(7));
 
 
             // Make JSON-Objects of SessionData and store them in a list
