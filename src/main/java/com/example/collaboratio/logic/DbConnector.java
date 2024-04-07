@@ -8,6 +8,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DbConnector {
+    // This class is responsible for connecting the Application with a MariaDB Database
+    // I Used the DOTENV Library to load Environment variables into dbUrl, dbUsername, dbPassword
+    // If used with another DB you can create a "java.env" file in root dir and load the ENVs from there as i did
 
     public static java.sql.Connection connection;
 

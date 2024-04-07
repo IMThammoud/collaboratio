@@ -20,6 +20,7 @@
 ____
 ## To-Do:
 ##### -> ~~Use Environment Variables for DB access~~
+##### -> Check if login-credentials are valid with JS, if not then alert the user that they're invalid
 ##### -> Fill Card Images with imageuploads from Sessioncreation or a Default one
 ##### -> Store IMGs on Server and safe the URL-Paths to the imgs in the DB instead of the img Blob
 ##### -> Dont allow Session Topic and Problem to be empty on creation
