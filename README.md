@@ -12,7 +12,6 @@
 ##### -> implemented Login logic
 ##### -> User Registration Works now
 ##### -> Session Creation works now
-##### ---> Need to implement Environment variables, but DB-Connection is denied when using the ENVs. Maybe they are not recognized?
 ##### --> Used GSON-Library to Send JSON data to frontend
 ##### --> Used Plain JS to create Card-Elements based on how many Sessions an User has
 ##### --> Filled the Cards with the Data from the JSON-Objects
