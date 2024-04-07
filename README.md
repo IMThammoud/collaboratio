@@ -30,3 +30,4 @@ ____
 ##### -> Write a Query to get info about the opened Session and render info on view
 ##### -> T_sessions_created Table needs a Primary key to render info about a session precisely
 ##### -> Limit the max size of previewed text on the cards via JS (Or other workaround)
+##### -> Sort the Sessions a User has in "last created"
