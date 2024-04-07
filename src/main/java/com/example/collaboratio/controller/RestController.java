@@ -65,13 +65,14 @@ public class RestController {
                     resultSessions.getInt(5));
 
             // Adding the SessionID (primary key) manually to the object and appending it to the JSON that way.
-            newSession.setSessionId(resultSessions.getInt(6));
+            newSession.setSessionHost(resultSessions.getInt(6));
+            newSession.setSessionId(resultSessions.getInt(7));
 
 
             // Make JSON-Objects of SessionData and store them in a list
             SessionList.add(newSession);
 
-            System.out.println("Content of Object in JSON-ARRAY" + SessionList.get(i).getSessionId());
+            System.out.println("Loaded Session from User with ID : " + SessionList.get(i).getSessionId());
             // Iterator to check how often this loop is repeated
             i++;
         }            listJson = serialize.toJson(SessionList);
